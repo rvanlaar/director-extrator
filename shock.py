@@ -188,6 +188,10 @@ def extract_projector(filename: str, outfolder: str):
 				absolute -= relative
 				temp_file.seek(pos)
 				write_i32(temp_file, absolute, temp_file_endian)
+		temp_file.seek(-4, 2)
+		if temp_file.read(4) != b"\x00\x00\x00\x00":
+			temp_file.seek(-4, 2)
+			write_i32(temp_file, 0, temp_file_endian)
 		temp_file.seek(0)
 		open(os.path.join(outfolder, oname), 'wb').write(temp_file.read())
 
