@@ -81,7 +81,7 @@ def is_projector_file(filename: Path) -> bool:
 
 def unprotect_filename(filename: Path) -> Path:
     conv = {".dcr": ".dir", ".dxr": ".dir", ".cxt": ".cst", ".cct": ".cst"}
-    suffix = conv[filename.suffix]
+    suffix = conv[filename.suffix.lower()]
     return filename.with_suffix(suffix)
 
 
@@ -108,7 +108,7 @@ def handle_dir(input_dir: Path, output_dir: Path):
             if is_projector_file(item):
                 print(f"{item} is Projector file")
                 handle_projector_file(item, output_dir)
-            elif item.suffix in [".dxr", ".cxt"]:
+            elif item.suffix.lower() in [".dxr", ".cxt"]:
                 print(f"{item}: Protected director file")
                 handle_protected_file(item, output_dir)
             else:
