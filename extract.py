@@ -95,7 +95,7 @@ def handle_projector_file(item: Path, output_dir: Path):
 def handle_protected_file(item: Path, output_dir: Path):
     filename = unprotect_filename(item)
     out_file = output_dir / filename.name
-    run([PROJECTORRAYS, str(item), out_file])
+    run([PROJECTORRAYS, "decompile", "--dump-scripts", str(item), "-o", out_file])
 
 
 def handle_dir(input_dir: Path, output_dir: Path):
