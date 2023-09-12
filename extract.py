@@ -61,7 +61,7 @@ class ExtractFile:
             return
         offset = is_win(data)
         if offset:
-            self.filetype = "mac"
+            self.filetype = "win"
             self.offset = offset
             return
         offset = is_rifx(data)
