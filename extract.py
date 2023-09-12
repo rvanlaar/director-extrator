@@ -109,7 +109,7 @@ def handle_dir(input_dir: Path, output_dir: Path):
             if is_projector_file(item):
                 print(f"{item} is Projector file")
                 handle_projector_file(item.absolute(), output_dir)
-            elif item.suffix.lower() in [".dxr", ".cxt"]:
+            elif item.suffix.lower() in [".dxr", ".cxt", ".dcr", ".cct"]:
                 print(f"{item}: Protected director file")
                 handle_protected_file(item.absolute(), output_dir)
             else:
