@@ -9,7 +9,7 @@ from typing import Optional
 
 from shock import extract_projector
 
-PROJECTORRAYS = "../ProjectorRays/projectorrays"
+PROJECTORRAYS = Path("../ProjectorRays/projectorrays").absolute()
 
 
 def get_offset(regex: bytes, data: bytes) -> Optional[int]:
@@ -61,7 +61,7 @@ class ExtractFile:
             return
         offset = is_win(data)
         if offset:
-            self.filetype = "mac"
+            self.filetype = "win"
             self.offset = offset
             return
         offset = is_rifx(data)
@@ -93,9 +93,10 @@ def handle_projector_file(item: Path, output_dir: Path):
 
 
 def handle_protected_file(item: Path, output_dir: Path):
-    filename = unprotect_filename(item)
-    out_file = output_dir / filename.name
-    run([PROJECTORRAYS, "decompile", "--dump-scripts", str(item), "-o", out_file])
+    output_item_dir = output_dir / item.stem
+    if not output_item_dir.exists():
+        output_item_dir.mkdir()
+    run([PROJECTORRAYS, "decompile", "--dump-scripts", str(item), "-o", output_dir.absolute()], cwd=output_item_dir)
 
 
 def handle_dir(input_dir: Path, output_dir: Path):
@@ -103,14 +104,14 @@ def handle_dir(input_dir: Path, output_dir: Path):
         output_dir.mkdir()
     for item in input_dir.iterdir():
         if item.is_dir():
-            handle_dir(item, output_dir / item.name)
+            handle_dir(item.absolute(), output_dir / item.name)
         if item.is_file():
             if is_projector_file(item):
                 print(f"{item} is Projector file")
-                handle_projector_file(item, output_dir)
-            elif item.suffix.lower() in [".dxr", ".cxt"]:
+                handle_projector_file(item.absolute(), output_dir)
+            elif item.suffix.lower() in [".dxr", ".cxt", ".dcr", ".cct"]:
                 print(f"{item}: Protected director file")
-                handle_protected_file(item, output_dir)
+                handle_protected_file(item.absolute(), output_dir)
             else:
                 print(f"{item}: copied")
                 copy2(str(item), str(output_dir / item.name))
